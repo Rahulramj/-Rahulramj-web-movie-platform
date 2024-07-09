@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F9FCFC;
+        }
+
+        header {
+            background-color: #333;
+            color: #0EB4B7;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header input {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        header button {
+            background-color: #0EB4B7;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: #05649A;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #recommendation {
+            margin-top: 20px;
+        }
+
+        #movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .movie {
+            background-color: #A6BFCD;
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: calc(25% - 40px);
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .movie img {
+            max-width: 100%;
+        }
+
+        .movie h3 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Rapidmovie</h1>
+        <input type="text" id="search" placeholder="Search for movies...">
+        <button id="search-btn">Search</button>
+    </header>
+
+    <main>
+        <section id="recommendation">
+            <h2>Recommended Movies</h2>
+            <div id="movie-list">
+                <!-- Recommended movies will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Rapidmovie</p>
+    </footer>
+
+    <script>
+        // Mock data for movie recommendations
+        const movies = [
+            {
+                id: 1,
+                title: "Leo",
+                description: "Parthiban is a mild-mannered cafe owner in Kashmir, who fends off a gang of murderous thugs and gains attention from a drug cartel claiming he was once a part of them.",
+                image: "https://th.bing.com/th/id/OIP.-Kfgs-ffhEnJEteYdmLnwwHaKl?w=1400&h=2000&rs=1&pid=ImgDetMain"
+            },
+            {
+                id: 2,
+                title: "Sardar",
+                description: "A spy, who is estranged from his family due to a mission, suddenly meets his police officer son.",
+                image: "https://th.bing.com/th/id/OIP.K-iXPWEvn3cxhVXOKRc3sAAAAA?rs=1&pid=ImgDetMain"
+            },
+            {
+                id: 3,
+                title: "K.G.F: Chapter 1",
+                description: "In the 1970s, a gangster goes undercover as a slave to assassinate the owner of a notorious gold mine.",
+                image: "https://1.bp.blogspot.com/-3gFor6uKPkc/Xtx4PrFctBI/AAAAAAABDqg/paIYThcx2mAtEpoArjgW12Hwi_tJOHs3gCLcBGAsYHQ/s1600/kgf-chapter-1.jpg"
+            },
+            {
+                id: 4,
+                title: "Vikram",
+                description: "A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.",
+                image: "https://th.bing.com/th/id/OIP.ug-8zKQx82ezvCRqnVolwQHaLP?rs=1&pid=ImgDetMain"
+            },
+           {
+                id: 5,
+                title: "Master",
+                description: "An alcoholic professor is sent to a juvenile school, where he clashes with a gangster who uses the school children for criminal activities.",
+                image: "https://southfans.com/wp-content/uploads/2020/05/Master-Movie-posters.jpg"
+            },
+            {
+                id: 6,
+                title: "Theri",
+                description: "When his daughter's life is endangered by a local gang, Joseph Kuruvilla will do whatever it takes to stop them. However, at the same time, his dangerous past slowly resurfaces.",
+                image: "https://th.bing.com/th/id/R.470c912776ebf78a39f3edaef2d314cc?rik=VL0P2S50FiMaQg&riu=http%3a%2f%2fwww.impawards.com%2fintl%2findia%2f2016%2fposters%2ftheri_xxlg.jpg&ehk=810mlit6GNRcnjrIRCdRXlJ4gnHITxGUM0uq56%2fa%2fNI%3d&risl=&pid=ImgRaw&r=0"
+            },
+            {
+                id: 7,
+                title: "Fight Club",
+                description: "Selva, a college student with football aspirations, grows frustrated over lack of opportunity. His anger draws him into conflicts impacting himself and family.",
+                image: "https://images.cinefil.com/movies/1153832.webp"
+            },
+            {
+                id: 8,
+                title: "Soorarai Pottru",
+                description: "Nedumaaran Rajangam 'Maara' sets out to make the common man fly and in the process takes on the world's most capital intensive industry and several enemies who stand in his way.",
+                image: "https://th.bing.com/th/id/OIP.dajazyCQaSWXcU6YGl1XOwAAAA?rs=1&pid=ImgDetMain"
+            },
+            {
+                id: 9,
+                title: "Kaithi",
+                description: "Dilli, an ex-convict, endeavours to meet his daughter for the first time after leaving prison. However, his attempts are interrupted due to a drug raid planned by Inspector Bejoy.",
+                image: "https://th.bing.com/th/id/OIP.h6VB4FjaiwPzVmr8_-pWLgHaJ4?rs=1&pid=ImgDetMain"
+            },
+            {
+                id: 10,
+                title: "Kaththi",
+                description: "A case of mistaken identity embroils an escaped convict in a fight against a large corporation intent on seizing a village's land.",
+                image: "https://www.filmibeat.com/fanimg/kaththi-photos-images-27613.jpg"
+            },
+            {
+                id: 11,
+                title: "Asuran",
+                description: "The teenage son of a farmer from an underprivileged caste kills a rich, upper caste landlord. How the pacifist farmer saves his hot-blooded son is the rest of the story.",
+                image: "https://onlookersmedia.in/wp-content/uploads/2019/01/asuran-first-look-poster-stills1.jpg"
+            },
+            {
+                id: 12,
+                title: "K.G.F: Chapter 2",
+                description: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes, while the government sees him as a threat to law and order. Rocky must battle threats from all sides for uncha...",
+                image: "https://th.bing.com/th/id/R.ae68546285df891a20f6b0774f9a2cef?rik=gLMobYHp9mHTvA&riu=http%3a%2f%2fwww.impawards.com%2fintl%2findia%2f2022%2fposters%2fkgf_chapter_two_xxlg.jpg&ehk=%2bLV92XdCyn%2b0XWdgSeyq1IjwBIwbZaS%2fO%2fA%2fj%2b0I2lE%3d&risl=&pid=ImgRaw&r=0"
+            },
+            {
+                id: 13,
+                title: "Sarpatta Parambarai",
+                description: "When Sarpatta Parambarai is challenged to a do-or-die match, will Kabilan, a young labourer, put on the gloves himself and lead his clan to victory, or be dissuaded by his disapproving mother....",
+                image: "https://wallpapercave.com/wp/wp9555129.jpg"
+            },
+            {
+                id: 14,
+                title: "Thani Oruvan",
+                description: "Siddharth Abimanyu, an influential scientist, is involved in various illegal medical practices. Mithran, an efficient IPS officer, decides to expose him.",
+                image: "https://data1.ibtimes.co.in/en/full/581217/thani-oruvan.jpg"
+            },
+            {
+                id: 15,
+                title: "Don",
+                description: "Follows the life of a youngster from college to his marriage. The transformation of the hero's character is the theme of this movie.",
+                image: "https://i.pinimg.com/originals/e8/4a/73/e84a7366756757d1474b0cd710a9df98.jpg"
+            },
+            {
+                id: 16,
+                title: "Maanagaram",
+                description: "Four youngsters arrive in Mumbai and each has a different agenda, and when their lives get intertwined, it leads to clashes, misunderstanding, and chaos.",
+                image: "https://th.bing.com/th/id/OIP.NtJ81jhinTNNqF3gs6E9YQHaJ4?rs=1&pid=ImgDetMain"
+            }
+        ];
+
+        const movieList = document.getElementById('movie-list');
+
+        function displayMovies(movieArray) {
+            movieList.innerHTML = '';
+            movieArray.forEach(movie => {
+                const movieDiv = document.createElement('div');
+                movieDiv.classList.add('movie');
+                movieDiv.innerHTML = `
+                    <img src="${movie.image}" alt="${movie.title}">
+                    <h3>${movie.title}</h3>
+                    <p>${movie.description}</p>
+                `;
+                movieList.appendChild(movieDiv);
+            });
+        }
+
+        // Display all recommended movies on page load
+        displayMovies(movies);
+
+        // Search functionality
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(searchTerm));
+            displayMovies(filteredMovies);
+        });
+    </script>
+</body>
+</html>
